@@ -112,25 +112,13 @@ doc_events = {
 
 # Scheduled Tasks
 # ---------------
-
-# TODO: run mark_absent_attendance every sunday midnight
-# scheduler_events = {
-# 	"all": [
-# 		"arbeitszeiterfassung_s4a.tasks.all"
-# 	],
-# 	"daily": [
-# 		"arbeitszeiterfassung_s4a.tasks.daily"
-# 	],
-# 	"hourly": [
-# 		"arbeitszeiterfassung_s4a.tasks.hourly"
-# 	],
-# 	"weekly": [
-# 		"arbeitszeiterfassung_s4a.tasks.weekly"
-# 	],
-# 	"monthly": [
-# 		"arbeitszeiterfassung_s4a.tasks.monthly"
-# 	],
-# }
+scheduler_events = {
+	"cron": {
+		"55 23 * * 7": [  # At 23:55 on Sunday
+			"arbeitszeiterfassung_s4a.arbeitszeiterfassung_s4a.attendance.attendance.mark_absent_attendance",
+		],
+	},
+}
 
 # Testing
 # -------
