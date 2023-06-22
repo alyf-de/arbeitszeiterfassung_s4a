@@ -4,6 +4,7 @@ app_publisher = "ALYF GmbH"
 app_description = "Arbeitszeiterfassung und Gleitzeit aus Employee Checkin"
 app_email = "hallo@alyf.de"
 app_license = "GPLv3"
+required_apps = ["erpnext", "hrms"]
 
 # Includes in <head>
 # ------------------
