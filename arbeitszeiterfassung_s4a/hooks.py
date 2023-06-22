@@ -41,7 +41,7 @@ required_apps = ["erpnext", "hrms"]
 
 # website user home page (by Role)
 # role_home_page = {
-#	"Role": "home_page"
+# 	"Role": "home_page"
 # }
 
 # Generators
@@ -55,8 +55,8 @@ required_apps = ["erpnext", "hrms"]
 
 # add methods and filters to jinja environment
 # jinja = {
-#	"methods": "arbeitszeiterfassung_s4a.utils.jinja_methods",
-#	"filters": "arbeitszeiterfassung_s4a.utils.jinja_filters"
+# 	"methods": "arbeitszeiterfassung_s4a.utils.jinja_methods",
+# 	"filters": "arbeitszeiterfassung_s4a.utils.jinja_filters"
 # }
 
 # Installation
@@ -82,11 +82,11 @@ after_install = "arbeitszeiterfassung_s4a.install.after_install"
 # Permissions evaluated in scripted ways
 
 # permission_query_conditions = {
-#	"Event": "frappe.desk.doctype.event.event.get_permission_query_conditions",
+# 	"Event": "frappe.desk.doctype.event.event.get_permission_query_conditions",
 # }
 #
 # has_permission = {
-#	"Event": "frappe.desk.doctype.event.event.has_permission",
+# 	"Event": "frappe.desk.doctype.event.event.has_permission",
 # }
 
 # DocType Class
@@ -94,7 +94,7 @@ after_install = "arbeitszeiterfassung_s4a.install.after_install"
 # Override standard doctype classes
 
 # override_doctype_class = {
-#	"ToDo": "custom_app.overrides.CustomToDo"
+# 	"ToDo": "custom_app.overrides.CustomToDo"
 # }
 
 # Document Events
@@ -104,28 +104,31 @@ after_install = "arbeitszeiterfassung_s4a.install.after_install"
 doc_events = {
 	"Attendance": {
 		"before_validate": "arbeitszeiterfassung_s4a.arbeitszeiterfassung_s4a.attendance.attendance.validate_attendance",
-	}
+	},
+	"Employee Checkin": {
+		"after_insert": "arbeitszeiterfassung_s4a.arbeitszeiterfassung_s4a.employee_checkin.employee_checkin.create_working_time_log",
+	},
 }
 
 # Scheduled Tasks
 # ---------------
 
 # scheduler_events = {
-#	"all": [
-#		"arbeitszeiterfassung_s4a.tasks.all"
-#	],
-#	"daily": [
-#		"arbeitszeiterfassung_s4a.tasks.daily"
-#	],
-#	"hourly": [
-#		"arbeitszeiterfassung_s4a.tasks.hourly"
-#	],
-#	"weekly": [
-#		"arbeitszeiterfassung_s4a.tasks.weekly"
-#	],
-#	"monthly": [
-#		"arbeitszeiterfassung_s4a.tasks.monthly"
-#	],
+# 	"all": [
+# 		"arbeitszeiterfassung_s4a.tasks.all"
+# 	],
+# 	"daily": [
+# 		"arbeitszeiterfassung_s4a.tasks.daily"
+# 	],
+# 	"hourly": [
+# 		"arbeitszeiterfassung_s4a.tasks.hourly"
+# 	],
+# 	"weekly": [
+# 		"arbeitszeiterfassung_s4a.tasks.weekly"
+# 	],
+# 	"monthly": [
+# 		"arbeitszeiterfassung_s4a.tasks.monthly"
+# 	],
 # }
 
 # Testing
@@ -137,14 +140,14 @@ doc_events = {
 # ------------------------------
 #
 # override_whitelisted_methods = {
-#	"frappe.desk.doctype.event.event.get_events": "arbeitszeiterfassung_s4a.event.get_events"
+# 	"frappe.desk.doctype.event.event.get_events": "arbeitszeiterfassung_s4a.event.get_events"
 # }
 #
 # each overriding function accepts a `data` argument;
 # generated from the base implementation of the doctype dashboard,
 # along with any modifications made in other Frappe apps
 # override_doctype_dashboards = {
-#	"Task": "arbeitszeiterfassung_s4a.task.get_dashboard_data"
+# 	"Task": "arbeitszeiterfassung_s4a.task.get_dashboard_data"
 # }
 
 # exempt linked doctypes from being automatically cancelled
@@ -170,31 +173,31 @@ doc_events = {
 # --------------------
 
 # user_data_fields = [
-#	{
-#		"doctype": "{doctype_1}",
-#		"filter_by": "{filter_by}",
-#		"redact_fields": ["{field_1}", "{field_2}"],
-#		"partial": 1,
-#	},
-#	{
-#		"doctype": "{doctype_2}",
-#		"filter_by": "{filter_by}",
-#		"partial": 1,
-#	},
-#	{
-#		"doctype": "{doctype_3}",
-#		"strict": False,
-#	},
-#	{
-#		"doctype": "{doctype_4}"
-#	}
+# 	{
+# 		"doctype": "{doctype_1}",
+# 		"filter_by": "{filter_by}",
+# 		"redact_fields": ["{field_1}", "{field_2}"],
+# 		"partial": 1,
+# 	},
+# 	{
+# 		"doctype": "{doctype_2}",
+# 		"filter_by": "{filter_by}",
+# 		"partial": 1,
+# 	},
+# 	{
+# 		"doctype": "{doctype_3}",
+# 		"strict": False,
+# 	},
+# 	{
+# 		"doctype": "{doctype_4}"
+# 	}
 # ]
 
 # Authentication and authorization
 # --------------------------------
 
 # auth_hooks = [
-#	"arbeitszeiterfassung_s4a.auth.validate"
+# 	"arbeitszeiterfassung_s4a.auth.validate"
 # ]
 
 arbeitszeit_property_setters = [
@@ -241,7 +244,7 @@ arbeitszeit_custom_fields = {
 			"insert_after": "company",
 			"translatable": 0,
 			"read_only": 1,
-		}
+		},
 	],
 	"Timesheet": [
 		{
