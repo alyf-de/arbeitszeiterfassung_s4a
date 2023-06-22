@@ -1,0 +1,18 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include arbeitszeiterfassung_s4a *.css
+recursive-include arbeitszeiterfassung_s4a *.csv
+recursive-include arbeitszeiterfassung_s4a *.html
+recursive-include arbeitszeiterfassung_s4a *.ico
+recursive-include arbeitszeiterfassung_s4a *.js
+recursive-include arbeitszeiterfassung_s4a *.json
+recursive-include arbeitszeiterfassung_s4a *.md
+recursive-include arbeitszeiterfassung_s4a *.png
+recursive-include arbeitszeiterfassung_s4a *.py
+recursive-include arbeitszeiterfassung_s4a *.svg
+recursive-include arbeitszeiterfassung_s4a *.txt
+recursive-exclude arbeitszeiterfassung_s4a *.pyc
