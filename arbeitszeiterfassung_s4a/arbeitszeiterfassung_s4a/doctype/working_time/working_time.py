@@ -66,13 +66,15 @@ class WorkingTime(Document):
             if log.duration and log.project:
                 costing_rate = get_costing_rate(self.employee)
                 hours = math.ceil(log.duration / FIVE_MINUTES) * FIVE_MINUTES / ONE_HOUR
-                billing_hours = (
-                    math.ceil(
-                        log.duration * float(log.billable[:-1]) / 100 / FIVE_MINUTES
+                billing_hours = 0
+                if log.billable:
+                    billing_hours = (
+                        math.ceil(
+                            log.duration * float(log.billable[:-1]) / 100 / FIVE_MINUTES
+                        )
+                        * FIVE_MINUTES
+                        / ONE_HOUR
                     )
-                    * FIVE_MINUTES
-                    / ONE_HOUR
-                )
 
                 customer, billing_rate = frappe.get_value(
                     "Project",
