@@ -1,5 +1,3 @@
-from . import __version__ as app_version
-
 app_name = "arbeitszeiterfassung_s4a"
 app_title = "Arbeitszeiterfassung S4A"
 app_publisher = "ALYF GmbH"
@@ -64,7 +62,7 @@ app_license = "GPLv3"
 # ------------
 
 # before_install = "arbeitszeiterfassung_s4a.install.before_install"
-# after_install = "arbeitszeiterfassung_s4a.install.after_install"
+after_install = "arbeitszeiterfassung_s4a.install.after_install"
 
 # Uninstallation
 # ------------
@@ -102,13 +100,11 @@ app_license = "GPLv3"
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-#	"*": {
-#		"on_update": "method",
-#		"on_cancel": "method",
-#		"on_trash": "method"
-#	}
-# }
+doc_events = {
+	"Attendance": {
+		"before_validate": "arbeitszeiterfassung_s4a.arbeitszeiterfassung_s4a.attendance.attendance.validate_attendance",
+	}
+}
 
 # Scheduled Tasks
 # ---------------
@@ -199,3 +195,62 @@ app_license = "GPLv3"
 # auth_hooks = [
 #	"arbeitszeiterfassung_s4a.auth.validate"
 # ]
+
+arbeitszeit_property_setters = [
+	# ("Timesheet Detail", "is_billable", "default", "1", "Small Text"),
+	# ("Timesheet Detail", "activity_type", "default", "Montage", "Small Text"),
+	("Attendance", "working_hours", "default", "0", "Small Text"),
+]
+
+arbeitszeit_custom_fields = {
+	"Employee": [
+		{
+			"fieldname": "expected_daily_working_hours",
+			"fieldtype": "Float",
+			"insert_after": "attendance_device_id",
+			"label": "Expected Daily Working Hours",
+			"translatable": 0,
+		},
+	],
+	"Attendance": [
+		{
+			"fieldname": "expected_working_hours",
+			"fieldtype": "Float",
+			"insert_after": "working_hours",
+			"label": "Expected Working Hours",
+			"read_only": 1,
+			"default": "0",
+			"translatable": 0,
+			"fetch_from": "employee.expected_daily_working_hours",
+		},
+		{
+			"fieldname": "flexitime",
+			"fieldtype": "Float",
+			"insert_after": "expected_working_hours",
+			"label": "Flexitime",
+			"read_only": 1,
+			"default": "0",
+			"translatable": 0,
+		},
+		{
+			"fieldname": "working_time",
+			"label": "Working Time",
+			"fieldtype": "Link",
+			"options": "Working Time",
+			"insert_after": "company",
+			"translatable": 0,
+			"read_only": 1,
+		}
+	],
+	"Timesheet": [
+		{
+			"fieldname": "working_time",
+			"label": "Working Time",
+			"fieldtype": "Link",
+			"options": "Working Time",
+			"insert_after": "project",
+			"translatable": 0,
+			"read_only": 1,
+		}
+	],
+}
