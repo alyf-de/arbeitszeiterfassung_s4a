@@ -103,7 +103,7 @@ after_install = "arbeitszeiterfassung_s4a.install.after_install"
 
 doc_events = {
 	"Attendance": {
-		"before_validate": "arbeitszeiterfassung_s4a.arbeitszeiterfassung_s4a.attendance.attendance.validate_attendance",
+		"before_validate": "arbeitszeiterfassung_s4a.arbeitszeiterfassung_s4a.attendance.attendance.before_validate",
 	},
 	"Employee Checkin": {
 		"after_insert": "arbeitszeiterfassung_s4a.arbeitszeiterfassung_s4a.employee_checkin.employee_checkin.create_working_time_log",
