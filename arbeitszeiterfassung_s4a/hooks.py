@@ -113,6 +113,7 @@ doc_events = {
 # Scheduled Tasks
 # ---------------
 
+# TODO: run mark_absent_attendance every sunday midnight
 # scheduler_events = {
 # 	"all": [
 # 		"arbeitszeiterfassung_s4a.tasks.all"
