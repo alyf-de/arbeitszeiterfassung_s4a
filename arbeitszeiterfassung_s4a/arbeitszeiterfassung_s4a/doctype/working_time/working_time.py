@@ -54,6 +54,7 @@ class WorkingTime(Document):
                     else "Half Day",
                     "attendance_date": self.date,
                     "working_time": self.name,
+                    "working_hours": self.working_time / 60 / 60,
                 }
             )
             attendance.flags.ignore_permissions = True
