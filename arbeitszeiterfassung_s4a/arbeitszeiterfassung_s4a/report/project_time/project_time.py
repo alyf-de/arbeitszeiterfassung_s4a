@@ -115,20 +115,20 @@ def get_data(from_date: str, to_date: str):
 			total_hrs = sum(row[4] for row in timesheets)
 			result.extend(timesheets)
 
-		result.append(
+		result.extend(
 			(
-				None,
-				None,
-				None,
-				frappe.bold(_("Sum for {}").format(employee.employee_name)),
-				total_hrs,
-				None,
-				None,
-				None,
-				None,
+				(
+					None,
+					None,
+					None,
+					frappe.bold(_("Sum for {}").format(employee.employee_name)),
+					total_hrs,
+					None,
+					None,
+					None,
+					None,
+				),
+				[None] * 9,
 			)
 		)
-
-		result.append([None] * 9)
-
 	return result

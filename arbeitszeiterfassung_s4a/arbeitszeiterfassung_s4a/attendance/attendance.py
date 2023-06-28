@@ -42,10 +42,9 @@ def mark_absent_attendance():
 		],
 		pluck="name",
 	):
-		unmarked_days = get_unmarked_days(
+		if unmarked_days := get_unmarked_days(
 			employee, from_date, to_date, exclude_holidays=1
-		)
-		if unmarked_days:
+		):
 			mark_bulk_attendance(
 				{
 					"employee": employee,
