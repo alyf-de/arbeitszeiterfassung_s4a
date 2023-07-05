@@ -1,6 +1,6 @@
 import frappe
 from frappe.utils import get_datetime
-
+from datetime import timedelta, datetime
 
 def create_working_time_log(doc, event):
 	if doc.log_type == "OUT":
@@ -41,3 +41,26 @@ def create_working_time_log(doc, event):
 			},
 		)
 		working_time.save()
+
+# For logged in employees at midnight, create a checkin of type OUT at 23:59:59 and a checkin of type IN at 00:00:00
+def switch_checkins_at_midnight():
+	current_datetime = datetime.now()
+	previous_day = current_datetime - timedelta(days=1)
+
+	all_employees = frappe.get_all("Employee")
+	for employee in all_employees:
+		last_check = frappe.get_all("Employee Checkin", order_by="time desc", filters={"employee": employee.name}, limit=1) #[{'name': 'EMP-CKIN-07-2023-000005'}]
+		last_type = frappe.db.get_value("Employee Checkin", last_check[0].name, "log_type")
+		if last_type == "IN":
+			# create checkin of type OUT at 23:59:59
+			new_checkout = frappe.new_doc("Employee Checkin")
+			new_checkout.employee = employee.name
+			new_checkout.log_type = "OUT"
+			new_checkout.time = previous_day.replace(hour=23, minute=59, second=59).strftime("%Y-%m-%d %H:%M:%S")
+			new_checkout.save()
+			# create checkin of type IN at 00:00:00
+			new_checkin = frappe.new_doc("Employee Checkin")
+			new_checkin.employee = employee.name
+			new_checkin.log_type = "IN"
+			new_checkin.time = current_datetime.replace(hour=0, minute=0, second=0).strftime("%Y-%m-%d %H:%M:%S")
+			new_checkin.save()
