@@ -76,10 +76,10 @@ class WorkingTime(Document):
                         / ONE_HOUR
                     )
 
-                customer, billing_rate = frappe.get_value(
+                customer = frappe.get_value(
                     "Project",
                     log.project,
-                    ["customer", "billing_rate"],
+                    ["customer"],
                 )
 
                 frappe.get_doc(
@@ -91,10 +91,10 @@ class WorkingTime(Document):
                                 "project": log.project,
                                 "task": log.task,
                                 "activity_type": "Default",
-                                "base_billing_rate": billing_rate,
+                                "base_billing_rate": 0,
                                 "base_costing_rate": costing_rate,
                                 "costing_rate": costing_rate,
-                                "billing_rate": billing_rate,
+                                "billing_rate": 0,
                                 "hours": hours,
                                 "from_time": self.date,
                                 "billing_hours": billing_hours,
