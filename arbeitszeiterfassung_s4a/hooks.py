@@ -108,9 +108,6 @@ doc_events = {
 	"Employee Checkin": {
 		"after_insert": "arbeitszeiterfassung_s4a.arbeitszeiterfassung_s4a.employee_checkin.employee_checkin.create_working_time_log",
 	},
-	"Employee Checkin": {
-		"after_save": "arbeitszeiterfassung_s4a.arbeitszeiterfassung_s4a.employee_ceckin.employee_checkin.switch_checkins_at_midnight",
-	},
 }
 
 # Scheduled Tasks
