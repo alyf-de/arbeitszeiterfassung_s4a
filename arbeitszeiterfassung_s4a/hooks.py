@@ -121,9 +121,9 @@ scheduler_events = {
 			"arbeitszeiterfassung_s4a.arbeitszeiterfassung_s4a.attendance.attendance.mark_absent_attendance",
 		],
 	},
-    "cron": {# every minute
-        "* * * * *": [
-            "arbeitszeiterfassung_s4a.arbeitszeiterfassung_s4a.employee_checkin.employee_checkin.switch_checkins_at_midnight",
+	"cron": {
+		"0 0 * * 2-6": [  # At 00:00 on every day-of-week from Tuesday through Saturday.
+			"arbeitszeiterfassung_s4a.arbeitszeiterfassung_s4a.employee_checkin.employee_checkin.switch_checkins_at_midnight",
 		],
 	},
 }
