@@ -42,8 +42,8 @@ def create_working_time_log(doc, event):
 		)
 		working_time.save()
 
-# For logged in employees at midnight, create a checkin of type OUT at 23:59:59 and a checkin of type IN at 00:00:00
 def switch_checkins_at_midnight():
+	"""Create an Employee Checkin of type 'OUT' at 23:59:59 and one of type 'IN' at 00:00:00"""
 	current_datetime = datetime.now()
 	previous_day = current_datetime - timedelta(days=1)
 
