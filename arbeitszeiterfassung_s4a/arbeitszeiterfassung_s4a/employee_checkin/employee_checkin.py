@@ -47,11 +47,25 @@ def switch_checkins_at_midnight():
 	current_datetime = datetime.now()
 	previous_day = current_datetime - timedelta(days=1)
 
-	all_employees = frappe.get_all("Employee")
-	for employee in all_employees:
-		last_check = frappe.get_all("Employee Checkin", order_by="time desc", filters={"employee": employee.name}, limit=1) #[{'name': 'EMP-CKIN-07-2023-000005'}]
-		last_type = frappe.db.get_value("Employee Checkin", last_check[0].name, "log_type")
-		if last_type == "IN":
+	for employee_name in frappe.get_all(
+		"Employee",
+		or_filters=[
+			["relieving_date", "is", "not set"],
+			["relieving_date", ">", current_datetime.date()]
+		],
+		pluck="name"
+	):
+		last_type = frappe.get_all(
+			"Employee Checkin",
+			order_by="time desc",
+			filters={
+				"employee": employee_name,
+				"time": (">=", previous_day.date())
+			},
+			limit=1,
+			pluck="log_type"
+		)
+		if last_type and last_type[0] == "IN":
 			# create checkin of type OUT at 23:59:59
 			new_checkout = frappe.new_doc("Employee Checkin")
 			new_checkout.employee = employee.name
