@@ -7,12 +7,8 @@ import frappe
 from frappe import _
 from frappe.model.document import Document
 
-HALF_DAY = 3.25
-OVERTIME_FACTOR = 1.15
-MAX_HALF_DAY = HALF_DAY * OVERTIME_FACTOR * 60 * 60
 FIVE_MINUTES = 5 * 60
 ONE_HOUR = 60 * 60
-
 
 class WorkingTime(Document):
     def before_validate(self):
@@ -45,6 +41,10 @@ class WorkingTime(Document):
                 "docstatus": ("!=", 2)
             }
         ):
+            HALF_DAY = frappe.get_value("Employee", self.employee, "expected_daily_working_hours") / 2
+            OVERTIME_FACTOR = 1.15
+            MAX_HALF_DAY = HALF_DAY * OVERTIME_FACTOR * 60 * 60
+            
             attendance = frappe.get_doc(
                 {
                     "doctype": "Attendance",
