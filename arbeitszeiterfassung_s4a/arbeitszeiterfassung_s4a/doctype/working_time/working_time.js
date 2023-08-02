@@ -27,6 +27,8 @@ frappe.ui.form.on("Working Time Log", {
 		let prev_to_time;
 		if (frm.doc.time_logs.length > 1) {
 			prev_to_time = frm.doc.time_logs.at(-2).to_time;
+			prev_row = frm.doc.time_logs.at(-2).name;
+			frappe.model.set_value(cdt, prev_row, "to_time", frappe.datetime.now_time(false));
 		}
 		frappe.model.set_value(cdt, cdn, "from_time", prev_to_time || frappe.datetime.now_time(false));
 		frappe.model.set_value(cdt, cdn, "to_time", "");  // Otherwise Frappe may overwrite empty values with the current time on save.
