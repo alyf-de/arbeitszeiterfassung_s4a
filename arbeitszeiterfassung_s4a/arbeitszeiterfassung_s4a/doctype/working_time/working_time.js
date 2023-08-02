@@ -15,6 +15,7 @@ frappe.ui.form.on("Working Time", {
 			return {
 				filters: {
 					department: doc.department,
+					status: "Open",
 				}
 			};
 		});
