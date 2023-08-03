@@ -81,9 +81,13 @@ jobs:
       - name: Install
         working-directory: /home/runner/frappe-bench
         run: |
+          bench get-app erpnext
+          bench get-app hrms
           bench get-app arbeitszeiterfassung_s4a $GITHUB_WORKSPACE
           bench setup requirements --dev
           bench new-site --db-root-password root --admin-password admin test_site
+          bench --site test_site install-app erpnext
+          bench --site test_site install-app hrms
           bench --site test_site install-app arbeitszeiterfassung_s4a
           bench build
         env:
