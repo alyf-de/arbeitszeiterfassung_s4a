@@ -10,6 +10,8 @@ from frappe.model.document import Document
 FIVE_MINUTES = 5 * 60
 ONE_HOUR = 60 * 60
 
+default_activity = frappe.db.get_single_value('Working Time Settings', 'default_activity')
+
 class WorkingTime(Document):
     def before_validate(self):
         self.break_time = self.working_time = self.project_time = 0
@@ -90,7 +92,7 @@ class WorkingTime(Document):
                                 "is_billable": 1,
                                 "project": log.project,
                                 "task": log.task,
-                                "activity_type": "Default",
+                                "activity_type": default_activity,
                                 "base_billing_rate": 0,
                                 "base_costing_rate": costing_rate,
                                 "costing_rate": costing_rate,
@@ -112,6 +114,6 @@ class WorkingTime(Document):
 def get_costing_rate(employee):
     return frappe.get_value(
         "Activity Cost",
-        {"activity_type": "Default", "employee": employee},
+        {"activity_type": default_activity, "employee": employee},
         "costing_rate",
     )
