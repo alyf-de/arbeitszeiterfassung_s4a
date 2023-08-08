@@ -1,8 +1,8 @@
 # Copyright (c) 2013, ALYF GmbH and contributors
 # For license information, please see license.txt
 
-from datetime import date
 from collections import defaultdict
+from datetime import date
 
 import frappe
 from frappe.utils.dateutils import get_last_day
@@ -137,9 +137,7 @@ def get_flexitime(employee: str, to_date: date) -> float:
 	return (correction_hours or 0.0) + (flexitime_hours or 0.0)
 
 
-def get_flexitime_from_attendance(
-	employee: str, to_date: date, from_date: str = None
-) -> float:
+def get_flexitime_from_attendance(employee: str, to_date: date, from_date: str = None) -> float:
 	filters = [
 		["attendance_date", "<=", to_date],
 		["employee", "=", employee],
