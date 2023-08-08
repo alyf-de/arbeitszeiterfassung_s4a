@@ -7,12 +7,11 @@ import frappe
 from frappe import _
 from frappe.model.document import Document
 
-HALF_DAY = 3.25
-OVERTIME_FACTOR = 1.15
-MAX_HALF_DAY = HALF_DAY * OVERTIME_FACTOR * 60 * 60
 FIVE_MINUTES = 5 * 60
 ONE_HOUR = 60 * 60
 
+def get_default_activity():
+    return frappe.db.get_single_value("Working Time Settings", "default_activity")
 
 class WorkingTime(Document):
     def before_validate(self):
@@ -45,6 +44,10 @@ class WorkingTime(Document):
                 "docstatus": ("!=", 2)
             }
         ):
+            HALF_DAY = frappe.get_value("Employee", self.employee, "expected_daily_working_hours") / 2
+            OVERTIME_FACTOR = 1.15
+            MAX_HALF_DAY = HALF_DAY * OVERTIME_FACTOR * 60 * 60
+            
             attendance = frappe.get_doc(
                 {
                     "doctype": "Attendance",
@@ -90,7 +93,7 @@ class WorkingTime(Document):
                                 "is_billable": 1,
                                 "project": log.project,
                                 "task": log.task,
-                                "activity_type": "Default",
+                                "activity_type": get_default_activity(),
                                 "base_billing_rate": 0,
                                 "base_costing_rate": costing_rate,
                                 "costing_rate": costing_rate,
@@ -112,6 +115,6 @@ class WorkingTime(Document):
 def get_costing_rate(employee):
     return frappe.get_value(
         "Activity Cost",
-        {"activity_type": "Default", "employee": employee},
+        {"activity_type": get_default_activity(), "employee": employee},
         "costing_rate",
     )

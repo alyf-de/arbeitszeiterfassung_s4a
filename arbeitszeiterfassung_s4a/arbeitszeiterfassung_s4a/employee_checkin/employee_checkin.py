@@ -1,46 +1,53 @@
+from datetime import datetime, timedelta
+
 import frappe
 from frappe.utils import get_datetime
-from datetime import timedelta, datetime
+
 
 def create_working_time_log(doc, event):
-	if doc.log_type == "OUT":
-		datetime = get_datetime(doc.time)
-		date = datetime.date()
-		to_time = datetime.time()
-		last_in = frappe.get_all(
-			"Employee Checkin",
-			filters={
-				"log_type": "IN",
-				"time": (">", date),		
-				"employee": doc.employee,
-			},
-			order_by="time desc",
-			limit=1,
-		)
-		last_in = frappe.get_doc("Employee Checkin", last_in[0].name)
-		from_datetime = get_datetime(last_in.time)
-		from_time = from_datetime.time()
+	datetime = get_datetime(doc.time)
+	checkin_date = datetime.date()
+	checkin_time = str(datetime.time())
 
-		working_time = frappe.get_all(
-			"Working Time",
-			filters={"employee": doc.employee, "date": date},
-			limit=1,
-		)
-		if not working_time:
-			working_time = frappe.new_doc("Working Time")
-			working_time.employee = doc.employee
-			working_time.date = date
-		else:
-			working_time = frappe.get_doc("Working Time", working_time[0].name)
+	working_time = frappe.get_all(
+		"Working Time",
+		filters={"employee": doc.employee, "date": checkin_date, "docstatus": 0},
+		limit=1,
+	)
+	if not working_time:
+		working_time = frappe.new_doc("Working Time")
+		working_time.employee = doc.employee
+		working_time.date = checkin_date
+	else:
+		working_time = frappe.get_doc("Working Time", working_time[0].name)
 
+	if doc.log_type == "IN":
 		working_time.append(
 			"time_logs",
 			{
-				"from_time": str(from_time),
-				"to_time": str(to_time),
+				"from_time": checkin_time,
+				"to_time": "",
 			},
 		)
-		working_time.save()
+		if len(working_time.time_logs) > 1 and not working_time.time_logs[-2].to_time:
+			working_time.time_logs[-2].to_time = checkin_time
+
+	elif doc.log_type == "OUT":
+		if not working_time.time_logs:
+			return
+
+		if not working_time.time_logs[-1].to_time:
+			working_time.time_logs[-1].to_time = checkin_time
+		else:
+			working_time.append(
+				"time_logs",
+				{
+					"from_time": working_time.time_logs[-1].to_time,
+					"to_time": checkin_time,
+				},
+			)
+	working_time.save()
+
 
 def switch_checkins_at_midnight():
 	"""Create an Employee Checkin of type 'OUT' at 23:59:59 and one of type 'IN' at 00:00:00"""
