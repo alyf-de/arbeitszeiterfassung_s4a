@@ -10,7 +10,4 @@ from frappe.utils.data import to_timedelta
 class WorkingTimeLog(Document):
 	def set_duration(self):
 		if self.from_time and self.to_time:
-			self.duration = time_diff_in_seconds(
-				to_timedelta(self.to_time),
-				to_timedelta(self.from_time)
-			)
+			self.duration = time_diff_in_seconds(to_timedelta(self.to_time), to_timedelta(self.from_time))

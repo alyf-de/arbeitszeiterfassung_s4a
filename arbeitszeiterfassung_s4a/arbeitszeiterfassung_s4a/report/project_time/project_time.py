@@ -3,8 +3,8 @@
 
 import frappe
 from frappe import _
-from ..working_time.working_time import get_employees
 
+from ..working_time.working_time import get_employees
 
 COLUMNS = [
 	{

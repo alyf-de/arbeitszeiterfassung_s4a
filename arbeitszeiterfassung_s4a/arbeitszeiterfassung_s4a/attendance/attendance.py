@@ -2,10 +2,7 @@ import frappe
 from erpnext.setup.doctype.employee.employee import get_holiday_list_for_employee
 from erpnext.setup.doctype.holiday_list.holiday_list import is_holiday
 from frappe.utils import add_days, getdate
-from hrms.hr.doctype.attendance.attendance import (
-	get_unmarked_days,
-	mark_bulk_attendance,
-)
+from hrms.hr.doctype.attendance.attendance import get_unmarked_days, mark_bulk_attendance
 
 
 def before_validate(doc, event=None):
@@ -20,10 +17,7 @@ def before_validate(doc, event=None):
 		# working time as working time.
 		leave_type = frappe.get_doc("Leave Type", doc.leave_type)
 		if leave_type.is_ppl:
-			doc.working_hours = (
-				doc.expected_working_hours
-				* leave_type.fraction_of_daily_salary_per_leave
-			)
+			doc.working_hours = doc.expected_working_hours * leave_type.fraction_of_daily_salary_per_leave
 
 	if not doc.working_hours:
 		doc.working_hours = 0
@@ -42,9 +36,7 @@ def mark_absent_attendance():
 		],
 		pluck="name",
 	):
-		unmarked_days = get_unmarked_days(
-			employee, from_date, to_date, exclude_holidays=1
-		)
+		unmarked_days = get_unmarked_days(employee, from_date, to_date, exclude_holidays=1)
 		if unmarked_days:
 			mark_bulk_attendance(
 				{

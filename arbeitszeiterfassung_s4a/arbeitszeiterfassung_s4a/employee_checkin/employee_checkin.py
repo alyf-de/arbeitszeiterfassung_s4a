@@ -58,30 +58,31 @@ def switch_checkins_at_midnight():
 		"Employee",
 		or_filters=[
 			["relieving_date", "is", "not set"],
-			["relieving_date", ">", current_datetime.date()]
+			["relieving_date", ">", current_datetime.date()],
 		],
-		pluck="name"
+		pluck="name",
 	):
 		last_type = frappe.get_all(
 			"Employee Checkin",
 			order_by="time desc",
-			filters={
-				"employee": employee_name,
-				"time": (">=", previous_day.date())
-			},
+			filters={"employee": employee_name, "time": (">=", previous_day.date())},
 			limit=1,
-			pluck="log_type"
+			pluck="log_type",
 		)
 		if last_type and last_type[0] == "IN":
 			# create checkin of type OUT at 23:59:59
 			new_checkout = frappe.new_doc("Employee Checkin")
 			new_checkout.employee = employee_name
 			new_checkout.log_type = "OUT"
-			new_checkout.time = previous_day.replace(hour=23, minute=59, second=59).strftime("%Y-%m-%d %H:%M:%S")
+			new_checkout.time = previous_day.replace(hour=23, minute=59, second=59).strftime(
+				"%Y-%m-%d %H:%M:%S"
+			)
 			new_checkout.save()
 			# create checkin of type IN at 00:00:00
 			new_checkin = frappe.new_doc("Employee Checkin")
 			new_checkin.employee = employee_name
 			new_checkin.log_type = "IN"
-			new_checkin.time = current_datetime.replace(hour=0, minute=0, second=0).strftime("%Y-%m-%d %H:%M:%S")
+			new_checkin.time = current_datetime.replace(hour=0, minute=0, second=0).strftime(
+				"%Y-%m-%d %H:%M:%S"
+			)
 			new_checkin.save()
