@@ -29,9 +29,8 @@ def create_working_time_log(doc, event):
 				"to_time": "",
 			},
 		)
-		if len(working_time.time_logs) > 1:
-			if not working_time.time_logs[-1].to_time:
-				working_time.time_logs[-2].to_time = str(checkin_time)
+		if len(working_time.time_logs) > 1 and not working_time.time_logs[-2].to_time:
+			working_time.time_logs[-2].to_time = str(checkin_time)
 
 	elif doc.log_type == "OUT":
 		if not working_time.time_logs:
