@@ -7,7 +7,7 @@ from frappe.utils import get_datetime
 def create_working_time_log(doc, event):
 	datetime = get_datetime(doc.time)
 	checkin_date = datetime.date()
-	checkin_time = datetime.time()
+	checkin_time = str(datetime.time())
 
 	working_time = frappe.get_all(
 		"Working Time",
@@ -25,25 +25,25 @@ def create_working_time_log(doc, event):
 		working_time.append(
 			"time_logs",
 			{
-				"from_time": str(checkin_time),
+				"from_time": checkin_time,
 				"to_time": "",
 			},
 		)
 		if len(working_time.time_logs) > 1 and not working_time.time_logs[-2].to_time:
-			working_time.time_logs[-2].to_time = str(checkin_time)
+			working_time.time_logs[-2].to_time = checkin_time
 
 	elif doc.log_type == "OUT":
 		if not working_time.time_logs:
 			return
 
 		if not working_time.time_logs[-1].to_time:
-			working_time.time_logs[-1].to_time = str(checkin_time)
+			working_time.time_logs[-1].to_time = checkin_time
 		else:
 			working_time.append(
 				"time_logs",
 				{
 					"from_time": working_time.time_logs[-1].to_time,
-					"to_time": str(checkin_time),
+					"to_time": checkin_time,
 				},
 			)
 	working_time.save()
