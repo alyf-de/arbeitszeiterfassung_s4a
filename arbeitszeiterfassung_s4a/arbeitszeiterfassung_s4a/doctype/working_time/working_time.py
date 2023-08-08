@@ -11,7 +11,7 @@ FIVE_MINUTES = 5 * 60
 ONE_HOUR = 60 * 60
 
 def get_default_activity():
-	return frappe.db.get_single_value("Working Time Settings", "default_activity")
+    return frappe.db.get_single_value("Working Time Settings", "default_activity")
 
 class WorkingTime(Document):
     def before_validate(self):
