@@ -31,6 +31,6 @@ frappe.ui.form.on("Working Time Log", {
 			}
 		}
 		frappe.model.set_value(cdt, cdn, "from_time", prev_row.to_time || frappe.datetime.now_time(false));
-		frappe.model.set_value(cdt, cdn, "to_time", "");  // Otherwise Frappe may overwrite empty values with the current time on save.
+		frappe.model.set_value(cdt, cdn, "to_time", "");  // Otherwise the framework may overwrite empty values with the current time on save.
 	},
 });
