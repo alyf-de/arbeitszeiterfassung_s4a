@@ -17,13 +17,17 @@ def get_default_activity():
 
 class WorkingTime(Document):
 	def before_validate(self):
-		self.break_time = self.working_time = self.project_time = 0
-		for log in self.time_logs:
-			log.set_duration()
-			duration = log.duration or 0
-			self.break_time += duration if log.is_break else 0
-			self.working_time += 0 if log.is_break else duration
-			self.project_time += duration if log.project and not log.is_break else 0
+		self.set_total_times()
+
+	def set_total_times(self):
+		(
+			self.total_time,
+			self.working_time,
+			self.project_time,
+			self.indicated_break_time,
+			self.mandatory_break_time,
+			self.break_time,
+		) = calculate_total_times(self.time_logs, self.indicated_break_time or 0)
 
 	def validate(self):
 		for log in self.time_logs:
@@ -111,3 +115,51 @@ def get_costing_rate(employee):
 		{"activity_type": get_default_activity(), "employee": employee},
 		"costing_rate",
 	)
+
+
+def calculate_total_times(time_logs, user_indicated_break_time):
+	total_time = 0
+	total_working_time = 0
+	total_project_time = 0
+	total_indicated_break_time = 0
+
+	for log in time_logs:
+		log.set_duration()
+		duration = log.duration or 0
+
+		if log.is_break:
+			total_indicated_break_time += duration
+		else:
+			total_working_time += duration
+			if log.project:
+				total_project_time += duration
+
+		total_time += duration
+
+	mandatory_break_time = calcualte_mandatory_break_time(
+		total_working_time, total_indicated_break_time
+	)
+	actual_break_time = max(
+		mandatory_break_time, total_indicated_break_time or user_indicated_break_time
+	)
+	adjusted_working_time = total_time - actual_break_time
+
+	return (
+		total_time,
+		adjusted_working_time,
+		total_project_time,
+		total_indicated_break_time or user_indicated_break_time,
+		mandatory_break_time,
+		actual_break_time,
+	)
+
+
+def calcualte_mandatory_break_time(working_time, break_time):
+	if not frappe.db.get_single_value("Working Time Settings", "enforce_mandatory_breaks"):
+		return 0
+	elif working_time + break_time > 9.75 * ONE_HOUR or working_time > 9 * ONE_HOUR:
+		return 45 * 60
+	elif working_time + break_time > 6.5 * ONE_HOUR or working_time > 6 * ONE_HOUR:
+		return 30 * 60
+	else:
+		return 0

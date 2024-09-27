@@ -13,9 +13,14 @@
   "date",
   "time_logs",
   "section_break_7",
+  "indicated_break_time",
+  "mandatory_break_time",
   "break_time",
+  "column_break_amiy",
+  "total_time",
   "working_time",
   "project_time",
+  "section_break_syac",
   "amended_from"
  ],
  "fields": [
@@ -60,6 +65,7 @@
    "read_only": 1
   },
   {
+   "bold": 1,
    "fieldname": "working_time",
    "fieldtype": "Duration",
    "hide_days": 1,
@@ -75,6 +81,7 @@
    "options": "Working Time Log"
   },
   {
+   "bold": 1,
    "fieldname": "break_time",
    "fieldtype": "Duration",
    "hide_days": 1,
@@ -89,6 +96,8 @@
   {
    "fieldname": "project_time",
    "fieldtype": "Duration",
+   "hide_days": 1,
+   "hide_seconds": 1,
    "label": "Project Time",
    "read_only": 1
   },
@@ -98,6 +107,38 @@
    "fieldtype": "Link",
    "label": "Department",
    "options": "Department",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_amiy",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_syac",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "indicated_break_time",
+   "fieldtype": "Duration",
+   "hide_days": 1,
+   "hide_seconds": 1,
+   "label": "Indicated Break",
+   "read_only_depends_on": "eval:doc.time_logs.some(row => row.is_break === 1)"
+  },
+  {
+   "fieldname": "mandatory_break_time",
+   "fieldtype": "Duration",
+   "hide_days": 1,
+   "hide_seconds": 1,
+   "label": "Mandatory Break",
+   "read_only": 1
+  },
+  {
+   "fieldname": "total_time",
+   "fieldtype": "Duration",
+   "hide_days": 1,
+   "hide_seconds": 1,
+   "label": "Total Time",
    "read_only": 1
   }
  ],
@@ -112,7 +153,7 @@
    "link_fieldname": "working_time"
   }
  ],
- "modified": "2023-06-22 12:25:38.722346",
+ "modified": "2024-09-27 11:50:43.070779",
  "modified_by": "Administrator",
  "module": "Arbeitszeiterfassung S4A",
  "name": "Working Time",

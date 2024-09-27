@@ -7,7 +7,8 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "default_activity"
+  "default_activity",
+  "enforce_mandatory_breaks"
  ],
  "fields": [
   {
@@ -17,12 +18,18 @@
    "label": "Default Activity",
    "options": "Activity Type",
    "reqd": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "enforce_mandatory_breaks",
+   "fieldtype": "Check",
+   "label": "Enforce Mandatory Breaks"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2023-08-02 17:24:48.248467",
+ "modified": "2024-09-27 10:14:36.062308",
  "modified_by": "Administrator",
  "module": "Arbeitszeiterfassung S4A",
  "name": "Working Time Settings",
