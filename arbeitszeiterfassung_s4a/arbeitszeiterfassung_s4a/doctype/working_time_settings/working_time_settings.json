@@ -16,8 +16,7 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Default Activity",
-   "options": "Activity Type",
-   "reqd": 1
+   "options": "Activity Type"
   },
   {
    "default": "0",
@@ -29,7 +28,7 @@
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-09-27 10:14:36.062308",
+ "modified": "2024-09-27 12:24:23.603346",
  "modified_by": "Administrator",
  "module": "Arbeitszeiterfassung S4A",
  "name": "Working Time Settings",
