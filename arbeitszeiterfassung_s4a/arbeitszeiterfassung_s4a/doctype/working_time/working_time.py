@@ -43,7 +43,8 @@ class WorkingTime(Document):
 
 	def create_attendance(self):
 		if not frappe.db.exists(
-			"Attendance", {"employee": self.employee, "attendance_date": self.date, "docstatus": ("!=", 2)}
+			"Attendance",
+			{"employee": self.employee, "attendance_date": self.date, "docstatus": ("!=", 2)},
 		):
 			HALF_DAY = frappe.get_value("Employee", self.employee, "expected_daily_working_hours") / 2
 			OVERTIME_FACTOR = 1.15
@@ -136,8 +137,11 @@ def calculate_total_times(time_logs, user_indicated_break_time):
 
 		total_time += duration
 
-	mandatory_break_time = calcualte_mandatory_break_time(
-		total_working_time, total_indicated_break_time
+	mandatory_break_time = calculate_mandatory_break_time(
+		total_working_time
+		if total_indicated_break_time
+		else total_working_time - user_indicated_break_time,
+		total_indicated_break_time or user_indicated_break_time,
 	)
 	actual_break_time = max(
 		mandatory_break_time, total_indicated_break_time or user_indicated_break_time
@@ -154,12 +158,28 @@ def calculate_total_times(time_logs, user_indicated_break_time):
 	)
 
 
-def calcualte_mandatory_break_time(working_time, break_time):
-	if not frappe.db.get_single_value("Working Time Settings", "enforce_mandatory_breaks"):
+def calculate_mandatory_break_time(working_time, break_time):
+	# TODO: Write comprehensive tests to cover all edge cases
+	settings = frappe.get_single("Working Time Settings")
+
+	if not settings.enforce_mandatory_breaks:
 		return 0
-	elif working_time + break_time > 9.75 * ONE_HOUR or working_time > 9 * ONE_HOUR:
-		return 45 * 60
-	elif working_time + break_time > 6.5 * ONE_HOUR or working_time > 6 * ONE_HOUR:
-		return 30 * 60
-	else:
-		return 0
+
+	break_cases = sorted(
+		(entry.working_time, entry.additional_break_time) for entry in settings.mandatory_breaks
+	)
+
+	total_mandatory_break = 0
+
+	for threshold, mandatory_break in break_cases:
+		if (
+			working_time + break_time > threshold + mandatory_break + total_mandatory_break
+			or working_time > threshold
+		):
+			total_mandatory_break += mandatory_break
+
+			if total_mandatory_break > break_time:
+				working_time = working_time - total_mandatory_break + break_time
+				break_time = total_mandatory_break
+
+	return total_mandatory_break
