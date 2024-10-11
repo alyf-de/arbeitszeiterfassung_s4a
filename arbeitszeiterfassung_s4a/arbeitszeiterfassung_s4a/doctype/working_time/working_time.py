@@ -17,13 +17,17 @@ def get_default_activity():
 
 class WorkingTime(Document):
 	def before_validate(self):
-		self.break_time = self.working_time = self.project_time = 0
-		for log in self.time_logs:
-			log.set_duration()
-			duration = log.duration or 0
-			self.break_time += duration if log.is_break else 0
-			self.working_time += 0 if log.is_break else duration
-			self.project_time += duration if log.project and not log.is_break else 0
+		self.set_total_times()
+
+	def set_total_times(self):
+		(
+			self.total_time,
+			self.working_time,
+			self.project_time,
+			self.indicated_break_time,
+			self.mandatory_break_time,
+			self.break_time,
+		) = calculate_total_times(self.time_logs, self.indicated_break_time or 0)
 
 	def validate(self):
 		for log in self.time_logs:
@@ -39,7 +43,8 @@ class WorkingTime(Document):
 
 	def create_attendance(self):
 		if not frappe.db.exists(
-			"Attendance", {"employee": self.employee, "attendance_date": self.date, "docstatus": ("!=", 2)}
+			"Attendance",
+			{"employee": self.employee, "attendance_date": self.date, "docstatus": ("!=", 2)},
 		):
 			HALF_DAY = frappe.get_value("Employee", self.employee, "expected_daily_working_hours") / 2
 			OVERTIME_FACTOR = 1.15
@@ -111,3 +116,70 @@ def get_costing_rate(employee):
 		{"activity_type": get_default_activity(), "employee": employee},
 		"costing_rate",
 	)
+
+
+def calculate_total_times(time_logs, user_indicated_break_time):
+	total_time = 0
+	total_working_time = 0
+	total_project_time = 0
+	total_indicated_break_time = 0
+
+	for log in time_logs:
+		log.set_duration()
+		duration = log.duration or 0
+
+		if log.is_break:
+			total_indicated_break_time += duration
+		else:
+			total_working_time += duration
+			if log.project:
+				total_project_time += duration
+
+		total_time += duration
+
+	mandatory_break_time = calculate_mandatory_break_time(
+		total_working_time
+		if total_indicated_break_time
+		else total_working_time - user_indicated_break_time,
+		total_indicated_break_time or user_indicated_break_time,
+	)
+	actual_break_time = max(
+		mandatory_break_time, total_indicated_break_time or user_indicated_break_time
+	)
+	adjusted_working_time = total_time - actual_break_time
+
+	return (
+		total_time,
+		adjusted_working_time,
+		total_project_time,
+		total_indicated_break_time or user_indicated_break_time,
+		mandatory_break_time,
+		actual_break_time,
+	)
+
+
+def calculate_mandatory_break_time(working_time, break_time):
+	# TODO: Write comprehensive tests to cover all edge cases
+	settings = frappe.get_single("Working Time Settings")
+
+	if not settings.enforce_mandatory_breaks:
+		return 0
+
+	break_cases = sorted(
+		(entry.working_time, entry.additional_break_time) for entry in settings.mandatory_breaks
+	)
+
+	total_mandatory_break = 0
+
+	for threshold, mandatory_break in break_cases:
+		if (
+			working_time + break_time > threshold + mandatory_break + total_mandatory_break
+			or working_time > threshold
+		):
+			total_mandatory_break += mandatory_break
+
+			if total_mandatory_break > break_time:
+				working_time = working_time - total_mandatory_break + break_time
+				break_time = total_mandatory_break
+
+	return total_mandatory_break

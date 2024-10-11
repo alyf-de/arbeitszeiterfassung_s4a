@@ -7,7 +7,10 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "default_activity"
+  "default_activity",
+  "mandatory_breaks_tab",
+  "enforce_mandatory_breaks",
+  "mandatory_breaks"
  ],
  "fields": [
   {
@@ -15,14 +18,31 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Default Activity",
-   "options": "Activity Type",
-   "reqd": 1
+   "options": "Activity Type"
+  },
+  {
+   "default": "0",
+   "fieldname": "enforce_mandatory_breaks",
+   "fieldtype": "Check",
+   "label": "Enforce Mandatory Breaks"
+  },
+  {
+   "depends_on": "eval:doc.enforce_mandatory_breaks",
+   "fieldname": "mandatory_breaks",
+   "fieldtype": "Table",
+   "label": "Mandatory Breaks",
+   "options": "Mandatory Break"
+  },
+  {
+   "fieldname": "mandatory_breaks_tab",
+   "fieldtype": "Tab Break",
+   "label": "Mandatory Breaks"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2023-08-02 17:24:48.248467",
+ "modified": "2024-09-28 16:20:12.769126",
  "modified_by": "Administrator",
  "module": "Arbeitszeiterfassung S4A",
  "name": "Working Time Settings",

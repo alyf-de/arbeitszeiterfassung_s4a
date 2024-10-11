@@ -23,6 +23,9 @@ frappe.ui.form.on("Working Time", {
 });
 
 frappe.ui.form.on("Working Time Log", {
+	is_break: function (frm) {
+		frm.refresh_fields();
+	},
 	time_logs_add: function (frm, cdt, cdn) {
 		let current_row = locals[cdt][cdn];
 		let index = frm.doc.time_logs.findIndex((row) => row.name === current_row.name);
